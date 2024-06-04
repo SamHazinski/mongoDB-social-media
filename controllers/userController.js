@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose').Types;
 const { User, Thought} = require('../models');
 
 
@@ -15,6 +14,7 @@ async getUsers(req, res) {
         return res.status(500).json(error);
     }
 },
+
 async getUser(req, res) {
     try {
         const user = await User.findOne({_id: req.params.userId})
@@ -36,5 +36,32 @@ async createUser(req, res) {
     } catch (err) {
         res.status(500).json(err);
       }
-}
+},
+
+async updateUser(req, res) {
+    try {
+        const user = await User.findOneAndUpdate({_id: req.params.userId},
+            {$set: req.body},
+            {new: true}
+        )
+        const userObj = {
+            user
+        };
+        return res.json(userObj);
+    
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+},
+
+async deleteUser(req, res) {
+    try {
+        const user = await User.findOneAndDelete({_id: req.params.userId})
+
+        res.status(200).json({message: "User deleted"});
+    
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+},
 }
